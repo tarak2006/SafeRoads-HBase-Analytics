@@ -1,0 +1,12 @@
+# Large datasets exceeding GitHub's 100MB file limit
+data/raw/*.csv
+data/processed/accidents_cleaned.tsv
+
+# Build artifacts
+hadoop_mapreduce/build/
+
+# OS and IDE caches
+.DS_Store
+*.pyc
+__pycache__/
+.idea/

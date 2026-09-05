@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": [
+        "hadoop_mapreduce/src"
+    ],
+    "java.project.outputPath": "hadoop_mapreduce/build",
+    "java.project.referencedLibraries": [
+        "hadoop_mapreduce/lib/**/*.jar"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "disabled"
+}
