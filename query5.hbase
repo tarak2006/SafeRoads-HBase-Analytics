@@ -1,0 +1,3 @@
+# Query 5: Severe Highway Gridlock & Detour Routing (> 60 min delay)
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration_min', 'hazard:severity'], FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')", LIMIT => 5}
+exit

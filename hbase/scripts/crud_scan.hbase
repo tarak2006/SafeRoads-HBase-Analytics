@@ -1,0 +1,4 @@
+# CRUD 2: Range SCAN & Projected SCAN
+scan 'saferoads_accidents', {STARTROW => 'OH#', STOPROW => 'OH~', LIMIT => 5}
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'hazard:severity'], LIMIT => 5}
+exit

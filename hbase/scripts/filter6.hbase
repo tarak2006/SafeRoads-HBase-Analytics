@@ -1,0 +1,3 @@
+# Filter 6: Compound FilterList MUST_PASS_ALL (Severity >= 3 AND Junction = 1)
+scan 'saferoads_accidents', {FILTER => "(SingleColumnValueFilter('hazard', 'severity', >=, 'binary:3') AND SingleColumnValueFilter('hazard', 'junction', =, 'binary:1'))", LIMIT => 5}
+exit

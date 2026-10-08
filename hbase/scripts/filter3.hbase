@@ -1,0 +1,3 @@
+# Filter 3: SingleColumnValueFilter Binary for Highway Junctions
+scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
+exit

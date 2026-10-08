@@ -1,0 +1,3 @@
+# Filter 1: PrefixFilter for Ohio State Crashes
+scan 'saferoads_accidents', {FILTER => "PrefixFilter('OH#')", LIMIT => 5}
+exit

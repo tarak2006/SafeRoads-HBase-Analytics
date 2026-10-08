@@ -1,0 +1,3 @@
+# Query 3: State DOT Regional Corridor Scan
+scan 'saferoads_accidents', {STARTROW => 'OH#', STOPROW => 'OH#~', COLUMNS => ['loc:city', 'hazard:severity', 'time:start_time'], LIMIT => 10}
+exit

@@ -1,0 +1,8 @@
+# CRUD 4: Safe Cell DELETE & Full Row DELETEALL
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'loc:state', 'TX'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity', '0'
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+delete 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity'
+deleteall 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+exit

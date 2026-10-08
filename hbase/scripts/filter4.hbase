@@ -1,0 +1,3 @@
+# Filter 4: SingleColumnValueFilter Binary for Traffic Signals
+scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1')", LIMIT => 5}
+exit

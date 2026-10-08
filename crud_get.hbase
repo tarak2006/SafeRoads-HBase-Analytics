@@ -1,0 +1,4 @@
+# CRUD 1: Point GET & Projected GET
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2', {COLUMN => ['loc:city', 'hazard:severity', 'env:weather']}
+exit

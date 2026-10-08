@@ -1,0 +1,3 @@
+# Query 2: Critical Trauma Air-Ambulance Dispatch
+get 'saferoads_accidents', 'CA#4#2016-03-22#A-500', {COLUMNS => ['loc:city', 'loc:lat', 'loc:lng', 'env:weather', 'hazard:severity']}
+exit

@@ -1,0 +1,3 @@
+# Query 6: Highway Interchange Infrastructure Safety Audit
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:county', 'hazard:severity', 'env:weather'], FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
+exit

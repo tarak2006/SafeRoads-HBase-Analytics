@@ -1,0 +1,3 @@
+# Filter 2: SingleColumnValueFilter Substring for Rain
+scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('env', 'weather', =, 'substring:Rain')", LIMIT => 5}
+exit

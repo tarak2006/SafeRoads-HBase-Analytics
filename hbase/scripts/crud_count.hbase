@@ -1,0 +1,3 @@
+# CRUD 3: Fast Count with Server Caching
+count 'saferoads_accidents', INTERVAL => 100, CACHE => 100
+exit
