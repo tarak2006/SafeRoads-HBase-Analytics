@@ -1,0 +1,42 @@
+# ==============================================================================
+# SafeRoads: Review 2 Demo Script - MEMBER 3
+# Role: Data Lifecycle, Cached Count & Deletion
+# Items: 1 Filter + 2 Application Queries (Total: 3 items)
+# ==============================================================================
+
+# --- STEP 1: CRUD COUNT OPERATION ---
+# Fast table record counting with RegionServer-side caching
+count 'saferoads_accidents', INTERVAL => 100, CACHE => 100
+
+# --- STEP 2: CRUD DELETE & DELETEALL OPERATIONS ---
+# NOTE: We insert a dedicated temporary test record so real accident data is NEVER deleted!
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'loc:state', 'TX'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'loc:city', 'Austin'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:severity', '1'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity', '0'
+
+# 2.1 Verify temporary record exists before deletion
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# 2.2 Delete single cell: hazard:amenity
+delete 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity'
+
+# 2.3 Delete entire test row
+deleteall 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# 2.4 Verify test row is completely deleted (returns 0 rows)
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# --- STEP 3: FILTER 5 - Comparison Operator >= (Duration >= 60 min) ---
+# Real-World Scenario: Find incidents causing prolonged roadway stoppage exceeding 1 hour
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration_min', 'hazard:severity'], FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')", LIMIT => 5}
+
+# --- STEP 4: APPLICATION QUERY 3 - State DOT Regional Corridor Scan ---
+# Real-World Scenario: Audit crash frequency across the Ohio DOT highway corridor
+scan 'saferoads_accidents', {STARTROW => 'OH#', STOPROW => 'OH#~', COLUMNS => ['loc:city', 'hazard:severity', 'time:start_time'], LIMIT => 10}
+
+# --- STEP 5: APPLICATION QUERY 4 - Morning Commuter Rush-Hour Congestion ---
+# Real-World Scenario: Detect crashes occurring at peak 8:00 AM rush hour
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:start_time', 'time:duration_min'], FILTER => "SingleColumnValueFilter('time', 'hour', =, 'binary:8')", LIMIT => 5}
+
+exit

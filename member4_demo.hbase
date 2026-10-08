@@ -1,0 +1,19 @@
+# ==============================================================================
+# SafeRoads: Review 2 Demo Script - MEMBER 4
+# Role: Compound Boolean Logic & Java Client API
+# Items: 1 Filter + 2 Application Queries (Total: 3 items) + Java API Execution
+# ==============================================================================
+
+# --- STEP 1: FILTER 6 - Compound FilterList with MUST_PASS_ALL (AND Logic) ---
+# Real-World Scenario: Combines Severity >= 3 AND Junction = 1 to isolate high-speed merge collisions
+scan 'saferoads_accidents', {FILTER => "(SingleColumnValueFilter('hazard', 'severity', >=, 'binary:3') AND SingleColumnValueFilter('hazard', 'junction', =, 'binary:1'))", LIMIT => 5}
+
+# --- STEP 2: APPLICATION QUERY 5 - Severe Highway Gridlock & Detour Management ---
+# Real-World Scenario: Pinpoints incidents with delays exceeding 60 minutes for detour radio broadcasts
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration_min', 'hazard:severity'], FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')", LIMIT => 5}
+
+# --- STEP 3: APPLICATION QUERY 6 - Highway Interchange Infrastructure Safety Audit ---
+# Real-World Scenario: Audits all collisions occurring at highway junctions to design merge-lane extensions
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:county', 'hazard:severity', 'env:weather'], FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
+
+exit

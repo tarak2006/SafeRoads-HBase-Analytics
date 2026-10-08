@@ -1,0 +1,29 @@
+# ==============================================================================
+# SafeRoads: Review 2 Demo Script - MEMBER 2
+# Role: CRUD Read Operations & Infrastructure Safety
+# Items: 2 Filters + 1 Application Query (Total: 3 items)
+# ==============================================================================
+
+# --- STEP 1: CRUD READ OPERATIONS (Point & Projected GET, Range SCAN) ---
+# 1.1 Full Record Point GET
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'
+
+# 1.2 Projected GET: Retrieve only City, Severity, and Weather
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2', {COLUMN => ['loc:city', 'hazard:severity', 'env:weather']}
+
+# 1.3 Projected SCAN: Scan only City, State, and Severity across incidents
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'hazard:severity'], LIMIT => 5}
+
+# --- STEP 2: FILTER 3 - Highway Interchange Junctions (= 'binary:1') ---
+# Real-World Scenario: Identify collisions occurring at highway merge zones / junctions
+scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
+
+# --- STEP 3: FILTER 4 - Traffic Signal Collisions (= 'binary:1') ---
+# Real-World Scenario: Audit collisions occurring at active signalized intersections
+scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1')", LIMIT => 5}
+
+# --- STEP 4: APPLICATION QUERY 2 - Critical Trauma Air-Ambulance Dispatch ---
+# Real-World Scenario: Slices only GPS coordinates (lat, lng), city, weather, and severity for medical flight crews
+get 'saferoads_accidents', 'CA#4#2016-03-22#A-500', {COLUMNS => ['loc:city', 'loc:lat', 'loc:lng', 'env:weather', 'hazard:severity']}
+
+exit
