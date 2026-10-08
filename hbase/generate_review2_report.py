@@ -367,8 +367,47 @@ def create_report(output_path):
     p_space4 = doc.add_paragraph()
     p_space4.paragraph_format.space_after = Pt(10)
 
-    # ------------------ 9. CONCLUSION ------------------
-    add_h1("9. Conclusion")
+    # ------------------ 9. TEAM MEMBER WORK DISTRIBUTION ------------------
+    add_h1("9. Team Member Work Distribution (4 Members)")
+    add_p("To ensure structured collaborative delivery and individual accountability, the SafeRoads HBase implementation is divided evenly across 4 team members:")
+
+    tbl_team = doc.add_table(rows=1, cols=4)
+    tbl_team.alignment = WD_TABLE_ALIGNMENT.CENTER
+    t_hdr = tbl_team.rows[0].cells
+    t_headers = ["Member / Role", "Core Responsibilities", "Assigned Filters & Scripts", "Assigned Queries & Java API"]
+    for i, h in enumerate(t_headers):
+        t_hdr[i].text = h
+        set_cell_bg(t_hdr[i], HEX_HEADER)
+        set_cell_margins(t_hdr[i], 120, 120, 150, 150)
+        p = t_hdr[i].paragraphs[0]
+        p.runs[0].font.name = "Calibri"
+        p.runs[0].font.size = Pt(10)
+        p.runs[0].font.bold = True
+        p.runs[0].font.color.rgb = RGBColor(255, 255, 255)
+
+    team_rows = [
+        ("Member 1\n(Schema & Ingestion)", "Table schema design, composite row key architecture, data loading and prefix indexing.", "• 01_create_table.hbase\n• 02_insert_records.hbase\n• Filter 1: PrefixFilter ('OH#')", "• App Query 1: EMS Incident Dossier\n• App Query 3: State DOT Corridor Scan"),
+        ("Member 2\n(Read Ops & Infrastructure)", "Column-family projection, range scan bounding, and spatial merge-zone safety filters.", "• 03_crud_operations.hbase (GET/SCAN)\n• Filter 2: Weather Substring ('Rain')\n• Filter 3: Junction Binary (= 1)", "• App Query 2: Air-Ambulance Telemetry\n• App Query 6: Interchange Merge Audit"),
+        ("Member 3\n(Lifecycle & Congestion)", "Server-side cached count, soft-delete tombstones, and temporal stoppage tracking.", "• 03_crud_operations.hbase (COUNT/DELETE)\n• Filter 4: Traffic Signal Binary (= 1)\n• Filter 5: Duration Comparison (>= 60m)", "• App Query 4: Morning Rush Hour (8 AM)\n• App Query 5: Gridlock Detour Routing"),
+        ("Member 4\n(Compound Logic & Java API)", "Multi-condition boolean logic, HBase Java Client connection, and programmatic batch PUTs.", "• Filter 6: Compound FilterList (AND)\n• SafeRoadsHBaseManager.java\n• run_java_api.cmd", "• Java ZooKeeper cluster connection\n• Java batch 2,000-record ingestion\n• Programmatic GET, SCAN, FilterList, DELETE")
+    ]
+
+    for m, resp, flt, qry in team_rows:
+        row_cells = tbl_team.add_row().cells
+        for idx, val in enumerate([m, resp, flt, qry]):
+            row_cells[idx].text = val
+            set_cell_bg(row_cells[idx], HEX_ROW_ALT if idx % 2 == 1 else "FFFFFF")
+            set_cell_margins(row_cells[idx], 80, 80, 120, 120)
+            p = row_cells[idx].paragraphs[0]
+            p.runs[0].font.name = "Calibri"
+            p.runs[0].font.size = Pt(9.0)
+            p.runs[0].font.color.rgb = C_CHARCOAL
+
+    p_space5 = doc.add_paragraph()
+    p_space5.paragraph_format.space_after = Pt(10)
+
+    # ------------------ 10. CONCLUSION ------------------
+    add_h1("10. Conclusion")
     add_p("SafeRoads delivers a robust, production-grade Big Data intelligence pipeline using Apache HBase 2.5.16 on real-world US traffic accident data. By leveraging a distributed column-family schema, an intelligent composite row key, separated server-side filters, application-specific queries, and a comprehensive Java Client API, the project comprehensively fulfills and exceeds all academic criteria for Project Review 2 with full 10/10 marks compliance.")
 
     doc.save(output_path)
