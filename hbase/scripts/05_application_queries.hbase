@@ -1,0 +1,84 @@
+# ==============================================================================
+# SafeRoads: Big Data Analytics Project Review 2 - Step 5: Application-Specific Queries
+# Course: 23CSE352 - Big Data Analytics | Evaluation Rubric: Application Queries (4 Marks)
+# Table Name: saferoads_accidents
+# Demonstrates:
+#   - Meaningful domain queries answering real-world transportation safety questions
+#   - Point lookups, projected GETs, bounded range scans, and application analytics
+#   - Emergency dispatch, rush-hour congestion, infrastructure safety, and weather response
+#
+# NOTE: Ensure records are inserted first before running this script:
+#       hbase shell 02_insert_records.hbase
+# ==============================================================================
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 1: Targeted Emergency Responder Incident Report Retrieval
+# Real-World Scenario: Highway Patrol & EMS Dispatch Investigation
+# Domain Question: "Retrieve the complete incident profile for crash A-2 in Franklin County, Ohio."
+# Application Value: Enables first responders to inspect location, weather, and injury severity
+#                    for a specific known collision without scanning irrelevant data.
+# ------------------------------------------------------------------------------
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 2: Critical Trauma Air-Ambulance & Life-Flight Dispatch
+# Real-World Scenario: High-Severity Emergency Response Coordination
+# Domain Question: "Retrieve precise GPS coordinates, city, weather, and severity for critical crash A-500."
+# Application Value: Slices only the 5 flight-critical telemetry columns (lat, lng, city, weather, severity)
+#                    to rapidly direct medical helicopters directly to the crash site.
+# ------------------------------------------------------------------------------
+get 'saferoads_accidents', 'CA#4#2016-03-22#A-500', {COLUMNS => ['loc:city', 'loc:lat', 'loc:lng', 'env:weather', 'hazard:severity']}
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 3: State Department of Transportation (DOT) Regional Highway Safety Audit
+# Real-World Scenario: State Corridor Crash Frequency Analysis (Ohio DOT)
+# Domain Question: "Audit all recorded traffic crashes within the State of Ohio (OH) highway corridor."
+# Application Value: Leverages lexicographical Row-Key prefix range scan [OH# to OH#~]
+#                    to extract state crash statistics with zero overhead.
+# ------------------------------------------------------------------------------
+scan 'saferoads_accidents', {STARTROW => 'OH#', STOPROW => 'OH#~', COLUMNS => ['loc:city', 'hazard:severity', 'time:start_time'], LIMIT => 10}
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 4: Morning Commuter Rush-Hour Congestion Risk Analysis
+# Real-World Scenario: Metropolitan Traffic Flow & Congestion Mitigation
+# Domain Question: "Identify traffic accidents occurring during the peak morning commute (8:00 AM)?"
+# Application Value: Evaluates peak rush-hour crash volume to adjust variable speed limit corridors
+#                    and schedule active traffic incident management patrol vehicles.
+# ------------------------------------------------------------------------------
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:start_time', 'time:duration_min'], FILTER => "SingleColumnValueFilter('time', 'hour', =, 'binary:8')", LIMIT => 5}
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 5: Severe Highway Gridlock & Detour Management (> 60 min delay)
+# Real-World Scenario: Dynamic Variable Message Sign (VMS) Traffic Detour Deployment
+# Domain Question: "Which traffic incidents caused major roadway blockages exceeding 1 hour?"
+# Application Value: Pinpoints high-delay blockages to trigger automatic real-time highway
+#                    advisory radio alerts and reroute heavy freight traffic.
+# ------------------------------------------------------------------------------
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration_min', 'hazard:severity'], FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')", LIMIT => 5}
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 6: Highway Interchange Infrastructure Safety Audit
+# Real-World Scenario: Civil Infrastructure Redesign & High-Risk Merge Zone Upgrades
+# Domain Question: "Which collisions occurred specifically at dangerous highway interchange junctions?"
+# Application Value: Pinpoints merge-zone crash hotspots for highway engineers to evaluate
+#                    acceleration lane extensions and barrier safety improvements.
+# ------------------------------------------------------------------------------
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:county', 'hazard:severity', 'env:weather'], FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
+
+
+# ------------------------------------------------------------------------------
+# APPLICATION QUERY 7: Adverse Weather Rapid Response & Winter Highway Maintenance
+# Real-World Scenario: Snow Plow & Anti-Icing Chemical Spray Dispatch
+# Domain Question: "Identify accidents occurring under rain or snow conditions with ambient temperature?"
+# Application Value: Correlates sub-freezing temperatures and precipitation to deploy salt spreaders
+#                    and warn drivers of black ice hazards on elevated bridges.
+# ------------------------------------------------------------------------------
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'env:weather', 'env:temp_f', 'env:visibility_mi'], FILTER => "(SingleColumnValueFilter('env', 'weather', =, 'substring:Rain') OR SingleColumnValueFilter('env', 'weather', =, 'substring:Snow'))", LIMIT => 5}
+
+exit

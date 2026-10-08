@@ -4,9 +4,14 @@ data/processed/accidents_cleaned.tsv
 
 # Build artifacts
 hadoop_mapreduce/build/
+hadoop_mapreduce/target/
+hbase/target/
+target/
 
 # OS and IDE caches
 .DS_Store
 *.pyc
 __pycache__/
 .idea/
+*.log
+

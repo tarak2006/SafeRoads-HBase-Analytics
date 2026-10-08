@@ -1,0 +1,21 @@
+# ==============================================================================
+# SafeRoads: Big Data Analytics Review 2 - Step 1: Create Table & Schema Design
+# Table Name: saferoads_accidents
+# Column Families:
+#   1. loc    : Geographic & spatial coordinates (state, city, county, lat, lng, distance)
+#   2. time   : Temporal metrics (start_time, end_time, duration, year, month, hour, day)
+#   3. env    : Environmental factors (weather, temp, humidity, visibility, wind, precipitation)
+#   4. hazard : Hazard indicators (severity, junction, traffic_signal, crossing, amenity)
+# ==============================================================================
+
+# Drop existing table cleanly if present
+disable 'saferoads_accidents' rescue nil
+drop 'saferoads_accidents' rescue nil
+
+# Create table with 4 semantic column families
+create 'saferoads_accidents', 'loc', 'time', 'env', 'hazard'
+
+# Verify table creation
+list 'saferoads_accidents'
+exists 'saferoads_accidents'
+exit

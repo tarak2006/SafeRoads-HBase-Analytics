@@ -1,0 +1,64 @@
+# ==============================================================================
+# SafeRoads: Big Data Analytics Review 2 - Step 3: CRUD Operations
+# Demonstrates: GET, SCAN, COUNT, DELETE, DELETEALL
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. GET OPERATIONS (Sub-millisecond Point Lookups)
+# ------------------------------------------------------------------------------
+# 1.1 Retrieve full incident record
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'
+
+# 1.2 Projected GET: Retrieve only City, Severity, and Weather
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2', {COLUMN => ['loc:city', 'hazard:severity', 'env:weather']}
+
+# 1.3 Column Family GET: Retrieve only location attributes
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2', {COLUMN => 'loc'}
+
+# 1.4 Column Family GET: Retrieve only environmental conditions
+get 'saferoads_accidents', 'OH#2#2016-02-08#A-2', {COLUMN => 'env'}
+
+
+# ------------------------------------------------------------------------------
+# 2. SCAN OPERATIONS (Range & Projection)
+# ------------------------------------------------------------------------------
+# 2.1 Basic Scan with Limit
+scan 'saferoads_accidents', {LIMIT => 3}
+
+# 2.2 Range Scan: Scan incidents occurring in Ohio (Row keys starting with 'OH#')
+scan 'saferoads_accidents', {STARTROW => 'OH#', STOPROW => 'OH~'}
+
+# 2.3 Projected Scan: Scan only City, State, and Severity across incidents
+scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'hazard:severity'], LIMIT => 5}
+
+
+# ------------------------------------------------------------------------------
+# 3. COUNT OPERATION (Fast counting with caching)
+# ------------------------------------------------------------------------------
+count 'saferoads_accidents', INTERVAL => 100, CACHE => 100
+
+
+# ------------------------------------------------------------------------------
+# 4. DELETE & DELETEALL OPERATIONS (Data Management & Lifecycle)
+# ------------------------------------------------------------------------------
+# Insert a temporary test incident record
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'loc:state', 'TX'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'loc:city', 'Austin'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:severity', '1'
+put 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity', '0'
+
+# Verify test record exists
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# 4.1 DELETE: Delete a specific column cell (hazard:amenity)
+delete 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001', 'hazard:amenity'
+
+# Verify column cell is deleted
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# 4.2 DELETEALL: Delete the entire row
+deleteall 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+
+# Verify entire row is deleted (returns 0 rows)
+get 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
+exit
