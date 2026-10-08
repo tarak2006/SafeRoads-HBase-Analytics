@@ -115,7 +115,7 @@ deleteall 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
 
 ## 🔍 5. HBase Filters (Separate Script: `04_filter_queries.hbase`)
 
-HBase filters execute directly on RegionServers to prevent network saturation. SafeRoads demonstrates **6 distinct filter classes and comparators**:
+HBase filters execute directly on RegionServers to prevent network saturation. SafeRoads demonstrates **exactly 6 server-side filters**:
 
 | # | Filter Name | Filter Expression | Business / Safety Goal |
 |---|---|---|---|
@@ -123,16 +123,14 @@ HBase filters execute directly on RegionServers to prevent network saturation. S
 | 2 | **SingleColumnValueFilter** | `SingleColumnValueFilter('env', 'weather', =, 'substring:Rain')` | Identifies crashes occurring in rain / precipitation |
 | 3 | **SingleColumnValueFilter** | `SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')` | Detects accidents specifically at highway junctions |
 | 4 | **SingleColumnValueFilter** | `SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1')` | Audits collisions occurring at active traffic signals |
-| 5 | **SingleColumnValueFilter** | `SingleColumnValueFilter('hazard', 'severity', =, 'binary:4')` | Isolates critical/fatal Level 4 accidents for trauma response |
-| 6 | **SingleColumnValueFilter** | `SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')` | Detects prolonged roadway blockages exceeding 60 minutes |
-| 7 | **Compound FilterList (AND)** | `(hazard:severity >= '3' AND hazard:junction = '1')` | Isolates high-severity crashes at highway interchange junctions |
-| 8 | **Compound FilterList (OR)** | `(hazard:junction = '1' OR hazard:traffic_signal = '1')` | Matches collisions where either junction or signal was present |
+| 5 | **SingleColumnValueFilter** | `SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')` | Detects prolonged roadway blockages exceeding 60 minutes |
+| 6 | **Compound FilterList (AND)** | `(hazard:severity >= '3' AND hazard:junction = '1')` | Isolates high-severity crashes at highway interchange junctions |
 
 ---
 
 ## 🚦 6. Application-Specific Queries (Separate Script: `05_application_queries.hbase`)
 
-SafeRoads connects database operations directly to real transportation management center workflows:
+SafeRoads connects database operations directly to real transportation management center workflows with **exactly 6 domain application queries**:
 
 1. **EMS Incident Dossier Retrieval:** `get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'` (Pulls full emergency responder profile).
 2. **Air-Ambulance GPS Telemetry Slicing:** `get ... {COLUMNS => ['loc:city', 'loc:lat', 'loc:lng', 'env:weather', 'hazard:severity']}` (Routes medical flight crew).
@@ -140,7 +138,6 @@ SafeRoads connects database operations directly to real transportation managemen
 4. **Morning Commuter Rush-Hour Risk:** `scan ... FILTER => "SingleColumnValueFilter('time', 'hour', =, 'binary:8')"` (8:00 AM commuter collisions).
 5. **Highway Gridlock & Detour Management:** `scan ... FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')"` (Roadway blockages > 60 min).
 6. **Interchange Safety Audit:** `scan ... FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')"` (Merge-zone hotspots).
-7. **Adverse Weather Maintenance Response:** `scan ... FILTER => "(weather = 'Rain' OR weather = 'Snow')"` (Salt and snow plow deployment).
 
 ---
 

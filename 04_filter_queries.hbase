@@ -3,10 +3,10 @@
 # Course: 23CSE352 - Big Data Analytics | Evaluation Rubric: Filters (4 Marks)
 # Table Name: saferoads_accidents
 # Demonstrates:
-#   - At least 3 required HBase filters (Demonstrates 8 filter queries across 6 filter types)
+#   - Exactly 6 distinct HBase filters answering transportation safety questions
 #   - PrefixFilter, SingleColumnValueFilter, and compound FilterList
 #   - Multiple comparison operators (=, >=, SubstringComparator, BinaryComparator)
-#   - Compound Boolean logic (MUST_PASS_ALL / AND, MUST_PASS_ONE / OR)
+#   - Compound Boolean logic (MUST_PASS_ALL / AND)
 #
 # NOTE: Ensure records are inserted first before running this script:
 #       hbase shell 02_insert_records.hbase
@@ -56,18 +56,7 @@ scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'traff
 
 
 # ------------------------------------------------------------------------------
-# FILTER 5: SingleColumnValueFilter with BinaryComparator (Fatal Severity Level 4)
-# Filter Class: org.apache.hadoop.hbase.filter.SingleColumnValueFilter
-# Comparator: BinaryComparator
-# Comparison Operator: =
-# Real-World Scenario: Critical Severity Level 4 Emergency Trauma Dispatch
-# Logic: Filters the most critical, life-threatening incidents (hazard:severity = '4').
-# ------------------------------------------------------------------------------
-scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'severity', =, 'binary:4')", LIMIT => 5}
-
-
-# ------------------------------------------------------------------------------
-# FILTER 6: SingleColumnValueFilter with Greater-Than-or-Equal (Prolonged Stoppage)
+# FILTER 5: SingleColumnValueFilter with Greater-Than-or-Equal (Prolonged Stoppage)
 # Filter Class: org.apache.hadoop.hbase.filter.SingleColumnValueFilter
 # Comparator: BinaryComparator
 # Comparison Operator: >=
@@ -78,22 +67,12 @@ scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration
 
 
 # ------------------------------------------------------------------------------
-# FILTER 7: Compound FilterList with MUST_PASS_ALL (Boolean AND Logic)
+# FILTER 6: Compound FilterList with MUST_PASS_ALL (Boolean AND Logic)
 # Filter Class: org.apache.hadoop.hbase.filter.FilterList
 # Operator: MUST_PASS_ALL (AND)
 # Real-World Scenario: High Severity Accidents at Highway Interchanges
 # Logic: Combines Severity >= 3 AND Junction = 1 to isolate high-speed interchange collisions.
 # ------------------------------------------------------------------------------
 scan 'saferoads_accidents', {FILTER => "(SingleColumnValueFilter('hazard', 'severity', >=, 'binary:3') AND SingleColumnValueFilter('hazard', 'junction', =, 'binary:1'))", LIMIT => 5}
-
-
-# ------------------------------------------------------------------------------
-# FILTER 8: Compound FilterList with MUST_PASS_ONE (Boolean OR Logic)
-# Filter Class: org.apache.hadoop.hbase.filter.FilterList
-# Operator: MUST_PASS_ONE (OR)
-# Real-World Scenario: Traffic Control Infrastructure Incident Audit
-# Logic: Matches incidents occurring at EITHER a junction OR a traffic signal.
-# ------------------------------------------------------------------------------
-scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'hazard:junction', 'hazard:traffic_signal'], FILTER => "(SingleColumnValueFilter('hazard', 'junction', =, 'binary:1') OR SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1'))", LIMIT => 5}
 
 exit

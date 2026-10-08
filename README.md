@@ -81,18 +81,27 @@ hbase shell /mnt/e/Big_data/big_data_14/hbase/commands.hbase
 
 ---
 
-## 🔍 5. Application-Specific Queries & Domain Analysis (4 Marks)
+## 🔍 5. HBase Filters & Application Queries (4 Marks)
 
-Every HBase operation answers an application-specific question for Continental Road Safety:
-
-| Query # | Domain Business Question | HBase Filter & Operators | Practical Analytical Value |
+### 5.1 HBase Filters (`04_filter_queries.hbase` - Exactly 6 Filters)
+| Filter # | Filter Name & Comparator | Expression / Condition | Safety / Transportation Goal |
 |:---:|---|---|---|
-| **Query 1** | *"Retrieve all traffic accidents registered in Ohio (OH)?"* | **PrefixFilter('OH#')** | Regional jurisdictional slicing using row-key index prefix without table scans. |
-| **Query 2** | *"Which accidents occurred during precipitation or rainy weather?"* | **SingleColumnValueFilter** (`env:weather`, `=`, `substring:Rain`) | Correlates wet road surfaces with crash clusters for variable speed limit advisory deployment. |
-| **Query 3** | *"Identify all accidents occurring at highway interchange junctions?"* | **SingleColumnValueFilter** (`hazard:junction`, `=`, `binary:1`) | Pinpoints dangerous merge zones for civil highway engineering improvements. |
-| **Query 4** | *"Retrieve catastrophic severity-4 accidents requiring emergency response?"* | **SingleColumnValueFilter** (`hazard:severity`, `=`, `binary:4`) | Real-time dispatch prioritization for life-saving emergency medical response. |
-| **Query 5** | *"Find incident records occurring during hazardous nighttime hours?"* | **ValueFilter** (`=`, `binary:Night`) across columns | Identifies dark unlit highway corridors requiring infrastructure illumination. |
-| **Query 6** | *"Identify high-severity accidents (Severity >= 3) at Highway Junctions?"* | **FilterList (AND)** (`hazard:severity` >= 3 AND `hazard:junction` = 1) | Multi-variable hazard correlation isolating highest-risk crash profiles. |
+| **Filter 1** | **PrefixFilter** | `PrefixFilter('OH#')` | Regional jurisdictional state slicing using row key prefix without table scans |
+| **Filter 2** | **SingleColumnValueFilter (Substring)** | `env:weather = 'substring:Rain'` | Isolates crashes occurring under precipitation / rain conditions |
+| **Filter 3** | **SingleColumnValueFilter (Binary)** | `hazard:junction = 'binary:1'` | Pinpoints merge zones & interchange junction collisions |
+| **Filter 4** | **SingleColumnValueFilter (Binary)** | `hazard:traffic_signal = 'binary:1'` | Audits urban collisions occurring at active signalized intersections |
+| **Filter 5** | **SingleColumnValueFilter (>=)** | `time:duration_min >= 'binary:60.0'` | Detects severe road closures causing delays exceeding 1 hour |
+| **Filter 6** | **FilterList (MUST_PASS_ALL / AND)** | `hazard:severity >= 3 AND hazard:junction = 1` | Isolates critical high-severity crashes at highway interchange zones |
+
+### 5.2 Application-Specific Queries (`05_application_queries.hbase` - Exactly 6 Queries)
+| Query # | Operation Type | Query Expression | Real-World Application Value |
+|:---:|---|---|---|
+| **Query 1** | **Point GET** | `get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'` | EMS first-responder incident dossier extraction |
+| **Query 2** | **Projected GET** | `get ... {COLUMNS => ['loc:city', 'loc:lat', 'loc:lng', 'env:weather', 'hazard:severity']}` | Air-ambulance / trauma flight crew GPS routing |
+| **Query 3** | **Bounded Range SCAN** | `scan ... {STARTROW => 'OH#', STOPROW => 'OH#~', LIMIT => 10}` | State DOT regional highway corridor safety audit |
+| **Query 4** | **Filtered SCAN** | `scan ... FILTER => "SingleColumnValueFilter('time', 'hour', =, 'binary:8')"` | Morning commuter peak rush-hour congestion risk |
+| **Query 5** | **Filtered SCAN** | `scan ... FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')"` | Dynamic highway message sign (VMS) gridlock rerouting |
+| **Query 6** | **Filtered SCAN** | `scan ... FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')"` | High-risk interchange civil infrastructure safety review |
 
 ---
 

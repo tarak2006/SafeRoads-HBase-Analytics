@@ -3,7 +3,7 @@
 # Course: 23CSE352 - Big Data Analytics | Evaluation Rubric: Application Queries (4 Marks)
 # Table Name: saferoads_accidents
 # Demonstrates:
-#   - Meaningful domain queries answering real-world transportation safety questions
+#   - Exactly 6 meaningful domain queries answering real transportation safety questions
 #   - Point lookups, projected GETs, bounded range scans, and application analytics
 #   - Emergency dispatch, rush-hour congestion, infrastructure safety, and weather response
 #
@@ -70,15 +70,5 @@ scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration
 #                    acceleration lane extensions and barrier safety improvements.
 # ------------------------------------------------------------------------------
 scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:county', 'hazard:severity', 'env:weather'], FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
-
-
-# ------------------------------------------------------------------------------
-# APPLICATION QUERY 7: Adverse Weather Rapid Response & Winter Highway Maintenance
-# Real-World Scenario: Snow Plow & Anti-Icing Chemical Spray Dispatch
-# Domain Question: "Identify accidents occurring under rain or snow conditions with ambient temperature?"
-# Application Value: Correlates sub-freezing temperatures and precipitation to deploy salt spreaders
-#                    and warn drivers of black ice hazards on elevated bridges.
-# ------------------------------------------------------------------------------
-scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'env:weather', 'env:temp_f', 'env:visibility_mi'], FILTER => "(SingleColumnValueFilter('env', 'weather', =, 'substring:Rain') OR SingleColumnValueFilter('env', 'weather', =, 'substring:Snow'))", LIMIT => 5}
 
 exit

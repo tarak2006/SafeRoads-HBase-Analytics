@@ -160,7 +160,7 @@ deleteall 'saferoads_accidents', 'TEST#1#2026-10-08#TEMP-001'
 
 
 # ------------------------------------------------------------------------------
-# 4. HBASE FILTERS (SEPARATE DEMONSTRATION) (4 Marks)
+# 4. HBASE FILTERS (EXACTLY 6 FILTERS) (4 Marks)
 # Script File: 04_filter_queries.hbase
 # ------------------------------------------------------------------------------
 # Filter 1: PrefixFilter (Ohio state crashes)
@@ -175,21 +175,15 @@ scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'junct
 # Filter 4: SingleColumnValueFilter Binary (Signalized Intersections)
 scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1')", LIMIT => 5}
 
-# Filter 5: SingleColumnValueFilter Binary (Severity 4 Crashes)
-scan 'saferoads_accidents', {FILTER => "SingleColumnValueFilter('hazard', 'severity', =, 'binary:4')", LIMIT => 5}
-
-# Filter 6: SingleColumnValueFilter Comparison >= (Duration >= 60 min)
+# Filter 5: SingleColumnValueFilter Comparison >= (Duration >= 60 min)
 scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration_min'], FILTER => "SingleColumnValueFilter('time', 'duration_min', >=, 'binary:60.0')", LIMIT => 5}
 
-# Filter 7: Compound FilterList MUST_PASS_ALL (AND) (Severity >= 3 AND Junction = 1)
+# Filter 6: Compound FilterList MUST_PASS_ALL (AND) (Severity >= 3 AND Junction = 1)
 scan 'saferoads_accidents', {FILTER => "(SingleColumnValueFilter('hazard', 'severity', >=, 'binary:3') AND SingleColumnValueFilter('hazard', 'junction', =, 'binary:1'))", LIMIT => 5}
-
-# Filter 8: Compound FilterList MUST_PASS_ONE (OR) (Junction = 1 OR Signal = 1)
-scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'hazard:junction', 'hazard:traffic_signal'], FILTER => "(SingleColumnValueFilter('hazard', 'junction', =, 'binary:1') OR SingleColumnValueFilter('hazard', 'traffic_signal', =, 'binary:1'))", LIMIT => 5}
 
 
 # ------------------------------------------------------------------------------
-# 5. APPLICATION-SPECIFIC QUERIES (SEPARATE DEMONSTRATION) (4 Marks)
+# 5. APPLICATION-SPECIFIC QUERIES (EXACTLY 6 QUERIES) (4 Marks)
 # Script File: 05_application_queries.hbase
 # ------------------------------------------------------------------------------
 # App Query 1: First Responder Crash Profile Lookup
@@ -209,8 +203,5 @@ scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'time:duration
 
 # App Query 6: Highway Interchange Infrastructure Safety Audit
 scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:county', 'hazard:severity', 'env:weather'], FILTER => "SingleColumnValueFilter('hazard', 'junction', =, 'binary:1')", LIMIT => 5}
-
-# App Query 7: Adverse Weather Emergency Response (Rain or Snow)
-scan 'saferoads_accidents', {COLUMNS => ['loc:city', 'loc:state', 'env:weather', 'env:temp_f'], FILTER => "(SingleColumnValueFilter('env', 'weather', =, 'substring:Rain') OR SingleColumnValueFilter('env', 'weather', =, 'substring:Snow'))", LIMIT => 5}
 
 exit
