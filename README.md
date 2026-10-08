@@ -105,7 +105,22 @@ hbase shell /mnt/e/Big_data/big_data_14/hbase/commands.hbase
 
 ---
 
-## 📋 6. Review 2 Evaluation Rubric Mapping (10 Marks)
+## 👥 6. Team Member Workload Allocation (4 Members)
+
+The 6 Filters and 6 Application Queries are divided equally into **3 items per person**:
+- **2 Members** receive: **2 Filters + 1 Query**
+- **2 Members** receive: **1 Filter + 2 Queries**
+
+| Team Member / Role | Base Implementation | Assigned Filters (6 Total) | Assigned Queries (6 Total) |
+|---|---|---|---|
+| **Member 1**<br>*(2 Filters + 1 Query)* | Schema creation & data loading (`01_create_table.hbase` & `02_insert_records.hbase`) | • **Filter 1:** `PrefixFilter('OH#')`<br>• **Filter 2:** `weather = 'substring:Rain'` | • **Query 1:** EMS Incident Dossier Retrieval (`get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'`) |
+| **Member 2**<br>*(2 Filters + 1 Query)* | Column projection & range scanning (`03_crud_operations.hbase` GET / SCAN) | • **Filter 3:** `junction = 'binary:1'`<br>• **Filter 4:** `traffic_signal = 'binary:1'` | • **Query 2:** Air-Ambulance Flight Crew GPS Telemetry (`get ... {COLUMNS => [...]}`) |
+| **Member 3**<br>*(1 Filter + 2 Queries)* | Cached counting & soft-delete tombstones (`03_crud_operations.hbase` COUNT / DELETE) | • **Filter 5:** `duration_min >= 'binary:60.0'` | • **Query 3:** State DOT Corridor Scan (`scan ... OH# to OH#~`)<br>• **Query 4:** Morning Rush-Hour Congestion (`hour = 8`) |
+| **Member 4**<br>*(1 Filter + 2 Queries)* | Compound boolean logic & Java API (`SafeRoadsHBaseManager.java` & `run_java_api.cmd`) | • **Filter 6:** `FilterList MUST_PASS_ALL` (Severity >= 3 AND Junction = 1) | • **Query 5:** Severe Highway Gridlock Detour (`duration >= 60.0`)<br>• **Query 6:** Interchange Merge Infrastructure Audit (`junction = 1`)<br>• **Java API Client Pipeline** |
+
+---
+
+## 📋 7. Review 2 Evaluation Rubric Mapping (10 Marks)
 
 | Criteria | Max Marks | Implementation Details | Status |
 |---|:---:|---|:---:|

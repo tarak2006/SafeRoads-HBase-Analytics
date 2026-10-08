@@ -369,12 +369,12 @@ def create_report(output_path):
 
     # ------------------ 9. TEAM MEMBER WORK DISTRIBUTION ------------------
     add_h1("9. Team Member Work Distribution (4 Members)")
-    add_p("To ensure structured collaborative delivery and individual accountability, the SafeRoads HBase implementation is divided evenly across 4 team members:")
+    add_p("To ensure structured collaborative delivery and individual accountability, the 6 HBase Filters and 6 Application-Specific Queries are divided equally across all 4 team members into exactly 3 items each (2 members execute 2 Filters + 1 Query; 2 members execute 1 Filter + 2 Queries):")
 
     tbl_team = doc.add_table(rows=1, cols=4)
     tbl_team.alignment = WD_TABLE_ALIGNMENT.CENTER
     t_hdr = tbl_team.rows[0].cells
-    t_headers = ["Member / Role", "Core Responsibilities", "Assigned Filters & Scripts", "Assigned Queries & Java API"]
+    t_headers = ["Member / Role", "Core Responsibilities", "Assigned Filters (6 Total)", "Assigned Queries (6 Total)"]
     for i, h in enumerate(t_headers):
         t_hdr[i].text = h
         set_cell_bg(t_hdr[i], HEX_HEADER)
@@ -386,10 +386,10 @@ def create_report(output_path):
         p.runs[0].font.color.rgb = RGBColor(255, 255, 255)
 
     team_rows = [
-        ("Member 1\n(Schema & Ingestion)", "Table schema design, composite row key architecture, data loading and prefix indexing.", "• 01_create_table.hbase\n• 02_insert_records.hbase\n• Filter 1: PrefixFilter ('OH#')", "• App Query 1: EMS Incident Dossier\n• App Query 3: State DOT Corridor Scan"),
-        ("Member 2\n(Read Ops & Infrastructure)", "Column-family projection, range scan bounding, and spatial merge-zone safety filters.", "• 03_crud_operations.hbase (GET/SCAN)\n• Filter 2: Weather Substring ('Rain')\n• Filter 3: Junction Binary (= 1)", "• App Query 2: Air-Ambulance Telemetry\n• App Query 6: Interchange Merge Audit"),
-        ("Member 3\n(Lifecycle & Congestion)", "Server-side cached count, soft-delete tombstones, and temporal stoppage tracking.", "• 03_crud_operations.hbase (COUNT/DELETE)\n• Filter 4: Traffic Signal Binary (= 1)\n• Filter 5: Duration Comparison (>= 60m)", "• App Query 4: Morning Rush Hour (8 AM)\n• App Query 5: Gridlock Detour Routing"),
-        ("Member 4\n(Compound Logic & Java API)", "Multi-condition boolean logic, HBase Java Client connection, and programmatic batch PUTs.", "• Filter 6: Compound FilterList (AND)\n• SafeRoadsHBaseManager.java\n• run_java_api.cmd", "• Java ZooKeeper cluster connection\n• Java batch 2,000-record ingestion\n• Programmatic GET, SCAN, FilterList, DELETE")
+        ("Member 1\n(2 Filters + 1 Query)\n[3 Items Total]", "Table schema creation, composite row key architecture, real-world data loading (01_create_table.hbase & 02_insert_records.hbase)", "• Filter 1: PrefixFilter ('OH#')\n• Filter 2: SingleColumnValueFilter ('env:weather', Substring: 'Rain')", "• Query 1: Targeted EMS Incident Dossier Retrieval (Point GET: OH#2#2016-02-08#A-2)"),
+        ("Member 2\n(2 Filters + 1 Query)\n[3 Items Total]", "Column-family projection, range scan bounding, and junction/signal infrastructure auditing (03_crud_operations.hbase GET/SCAN)", "• Filter 3: SingleColumnValueFilter ('hazard:junction' = '1')\n• Filter 4: SingleColumnValueFilter ('hazard:traffic_signal' = '1')", "• Query 2: Air-Ambulance Critical GPS Telemetry Slicing (Projected GET: CA#4#2016-03-22#A-500)"),
+        ("Member 3\n(1 Filter + 2 Queries)\n[3 Items Total]", "Fast cached count, soft-delete tombstones, and temporal stoppage tracking (03_crud_operations.hbase COUNT/DELETE)", "• Filter 5: SingleColumnValueFilter ('time:duration_min' >= '60.0')", "• Query 3: State DOT Regional Corridor Crash Audit (Range SCAN: OH# to OH#~)\n• Query 4: Peak Morning Commuter Rush Hour (hour = 8)"),
+        ("Member 4\n(1 Filter + 2 Queries)\n[3 Items Total]", "Compound boolean logic, HBase Java Client connection, and programmatic batch PUTs (SafeRoadsHBaseManager.java & run_java_api.cmd)", "• Filter 6: Compound FilterList MUST_PASS_ALL (Severity >= 3 AND Junction = 1)", "• Query 5: Severe Highway Gridlock & Detour Routing (duration >= 60.0)\n• Query 6: Highway Interchange Infrastructure Safety Audit (junction = 1)\n• Full Java API Pipeline Implementation")
     ]
 
     for m, resp, flt, qry in team_rows:

@@ -152,22 +152,35 @@ The program [`SafeRoadsHBaseManager.java`](file:///e:/Big_data/big_data_14/java/
 - **Deletion:** Implements cell and row deletions with `Table.delete(Delete)`.
 - **One-Command Runner:** `.\run_java_api.cmd`
 
+## 👥 8. Team Member Work Distribution (4 Members)
+
+The **6 HBase Filters** and **6 Application Queries** are divided equally into **exactly 3 items per person**:
+- **2 Members** receive: **2 Filters + 1 Query**
+- **2 Members** receive: **1 Filter + 2 Queries**
+
+| Member / Role | Base Implementation | Assigned Filters (6 Total) | Assigned Queries (6 Total) |
+|---|---|---|---|
+| **Member 1**<br>*(2 Filters + 1 Query)* | Schema creation & data loading (`01_create_table.hbase` & `02_insert_records.hbase`) | • **Filter 1:** `PrefixFilter('OH#')`<br>• **Filter 2:** `weather = 'substring:Rain'` | • **Query 1:** EMS Incident Dossier Retrieval (`get 'saferoads_accidents', 'OH#2#2016-02-08#A-2'`) |
+| **Member 2**<br>*(2 Filters + 1 Query)* | Column projection & range scanning (`03_crud_operations.hbase` GET / SCAN) | • **Filter 3:** `junction = 'binary:1'`<br>• **Filter 4:** `traffic_signal = 'binary:1'` | • **Query 2:** Air-Ambulance Flight Crew GPS Telemetry (`get ... {COLUMNS => [...]}`) |
+| **Member 3**<br>*(1 Filter + 2 Queries)* | Cached counting & soft-delete tombstones (`03_crud_operations.hbase` COUNT / DELETE) | • **Filter 5:** `duration_min >= 'binary:60.0'` | • **Query 3:** State DOT Corridor Scan (`scan ... OH# to OH#~`)<br>• **Query 4:** Morning Rush-Hour Congestion (`hour = 8`) |
+| **Member 4**<br>*(1 Filter + 2 Queries)* | Compound boolean logic & Java API (`SafeRoadsHBaseManager.java` & `run_java_api.cmd`) | • **Filter 6:** `FilterList MUST_PASS_ALL` (Severity >= 3 AND Junction = 1) | • **Query 5:** Severe Highway Gridlock Detour (`duration >= 60.0`)<br>• **Query 6:** Interchange Merge Infrastructure Audit (`junction = 1`)<br>• **Java API Client Pipeline** |
+
 ---
 
-## 📋 8. Evaluation Rubric Compliance (10 Marks)
+## 📋 9. Evaluation Rubric Compliance (10 Marks)
 
 | Criteria | Max Marks | Implementation Details | Status |
 |---|:---:|---|:---:|
 | **Real-world problem and dataset selection** | 1 | Real-world 1.42 GB US Accidents dataset across 49 states (`accidents_cleaned.tsv`). Solves low-latency transportation intelligence. | **Complete (1/1)** |
 | **HBase table design (row-key, column families)** | 1 | 4 Column families (`loc`, `time`, `env`, `hazard`). 4-part composite row-key (`<State>#<Severity>#<Date>#<ID>`). | **Complete (1/1)** |
 | **HBase Shell implementation** | 2 | Pure scripts `01_create_table.hbase`, `02_insert_records.hbase`, `03_crud_operations.hbase` (PUT, GET, SCAN, COUNT, DELETE, DELETEALL). | **Complete (2/2)** |
-| **HBase Filters & App Queries** | 4 | Separated into `04_filter_queries.hbase` (6 filter classes, comparators, FilterList AND/OR) and `05_application_queries.hbase` (7 domain queries). | **Complete (4/4)** |
+| **HBase Filters & App Queries** | 4 | Separated into `04_filter_queries.hbase` (exactly 6 filters) and `05_application_queries.hbase` (exactly 6 domain queries). | **Complete (4/4)** |
 | **Java API implementation** | 2 | Production-ready `SafeRoadsHBaseManager.java` executing end-to-end CRUD and filters on 2,000 records. | **Complete (2/2)** |
 | **TOTAL** | **10** | **All 10 Marks Fully Achieved & Verified** | **10 / 10** |
 
 ---
 
-## 🚀 9. PowerShell Execution Instructions
+## 🚀 10. PowerShell Execution Instructions
 
 Execute sequentially directly in Windows PowerShell (`PS E:\Big_data\big_data_14>`):
 
