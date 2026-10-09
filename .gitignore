@@ -13,5 +13,6 @@ target/
 *.pyc
 __pycache__/
 .idea/
-*.log
-
+# Temporary Word locks
+~$*.docx
+~$*.tmp
